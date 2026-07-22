@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>หน้าแรก</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:linear-gradient(135deg,#74ebd5,#9face6);
+    text-align:center;
+    padding:40px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+}
+
+h1{
+    color:#0066cc;
+    margin-bottom:20px;
+}
+
+h2{
+    color:#ff4444;
+    margin-top:20px;
+}
+
+p{
+    font-size:18px;
+    margin:10px 0;
+}
+
+blockquote{
+    margin:25px auto;
+    width:80%;
+    border-left:5px solid #0099ff;
+    padding-left:15px;
+    font-style:italic;
+    color:#555;
+}
+
+img{
+    width:220px;
+    height:220px;
+    object-fit:cover;
+    border-radius:50%;
+    border:5px solid white;
+    box-shadow:0 5px 15px rgba(0,0,0,.3);
+    margin:20px;
+}
+
+video{
+    width:100%;
+    max-width:500px;
+    border-radius:15px;
+    margin:20px;
+}
+
+audio{
+    width:90%;
+    max-width:400px;
+    margin:20px;
+}
+
+.facebook{
+    display:inline-block;
+    background:#1877f2;
+    color:white;
+    padding:12px 25px;
+    border-radius:30px;
+    text-decoration:none;
+    margin:20px;
+}
+
+.facebook:hover{
+    background:#0d5bcc;
+}
+
+button{
+    background:#00b894;
+    color:white;
+    border:none;
+    padding:12px 30px;
+    border-radius:30px;
+    cursor:pointer;
+    font-size:18px;
+}
+
+button:hover{
+    background:#009970;
+}
+
+hr{
+    margin:30px 0;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>🌟 หน้าแรก 🌟</h1>
+
+<h2>ชื่อ : อภิพงษ์ คงความเสรี</h2>
+
+<p>🎂 วันเกิด : 16/05/2552</p>
+<p>🎓 อายุ : 17 ปี</p>
+<p>🏫 วิทยาลัยเทคนิคเชียงใหม่</p>
+
+<h2>สิ่งที่ชอบ</h2>
+
+<p>🎮 เล่นเกม</p>
+
+<a class="facebook" href="https://www.facebook.com/apiphong.kongkaseri" target="_blank">
+📘 Facebook
+</a>
+
+<blockquote>
+"อย่าหยุดพัฒนาตัวเอง"
+</blockquote>
+
+<hr>
+
+<h2>📊 ข้อมูลแบบเรียลไทม์</h2>
+
+<p>👥 ผู้เข้าชมเว็บไซต์ :
+<span id="visitor">0 คน</span>
+</p>
+
+<p>🕒 เวลาเชียงใหม่ :
+<span id="time"></span>
+</p>
+
+<p>🌤️ สภาพอากาศเชียงใหม่ :
+<span id="weather">กำลังโหลด...</span>
+</p>
+
+<hr>
+
+<img src="รูป.jpg" alt="รูปภาพ">
+
+<h2>🎥 วิดีโอของฉัน</h2>
+
+<video controls>
+    <source src="วิดีโอ.mp4" type="video/mp4">
+</video>
+
+<h2>🎵 เพลงที่ชอบ</h2>
+
+<audio controls>
+    <source src="เสียง.mp3" type="audio/mpeg">
+</audio>
+
+<br><br>
+
+<a href="page1.html">
+<button>ถัดไป ➜</button>
+</a>
+
+</div>
+
+<script>
+// ผู้เข้าชม (LocalStorage)
+let visitor = localStorage.getItem("visitorCount");
+
+if(visitor == null){
+    visitor = 1;
+}else{
+    visitor = Number(visitor) + 1;
+}
+
+localStorage.setItem("visitorCount", visitor);
+document.getElementById("visitor").textContent = visitor + " คน";
+
+// เวลา
+function updateTime(){
+    const now = new Date();
+
+    document.getElementById("time").textContent =
+        now.toLocaleString("th-TH",{
+            timeZone:"Asia/Bangkok",
+            dateStyle:"full",
+            timeStyle:"medium"
+        });
+}
+
+updateTime();
+setInterval(updateTime,1000);
+
+// สภาพอากาศ
+fetch("https://api.open-meteo.com/v1/forecast?latitude=18.7883&longitude=98.9853&current=temperature_2m,weather_code&timezone=Asia/Bangkok")
+.then(res=>res.json())
+.then(data=>{
+
+    const code=data.current.weather_code;
+    let weather="";
+
+    if(code==0) weather="☀️ ท้องฟ้าแจ่มใส";
+    else if(code<=3) weather="⛅ มีเมฆ";
+    else if(code<=48) weather="🌫️ หมอก";
+    else if(code<=67) weather="🌧️ ฝน";
+    else if(code<=77) weather="❄️ หิมะ";
+    else weather="⛈️ พายุ";
+
+    document.getElementById("weather").textContent =
+    weather+" "+data.current.temperature_2m+"°C";
+
+})
+.catch(()=>{
+    document.getElementById("weather").textContent="โหลดข้อมูลไม่ได้";
+});
+</script>
+
+</body>
+</html>
